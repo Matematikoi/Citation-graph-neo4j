@@ -10,4 +10,6 @@ services:
     environment:
       - "NEO4J_AUTH=none"
     volumes:
+      - ./dblp/:/var/lib/neo4j/import/
       - ./data/:/var/lib/neo4j/data/
+    #command: tail -F anything

@@ -8,3 +8,10 @@ You can pull up a docker container for neo4j just by using
 docker compose up -d
 ```
 And to access neo4j browser, you can access http://localhost:7474/browser/ .
+
+# Upload the data
+To upload the data run:
+
+``` sh
+sh bulk_data_insert.sh
+```
