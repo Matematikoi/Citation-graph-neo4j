@@ -15,3 +15,10 @@ To upload the data run:
 ``` sh
 sh bulk_data_insert.sh
 ```
+
+# Change owners of the folder data and dblp
+
+Run the command :
+``` sh
+sudo chown -R $USER dblp data 
+```
