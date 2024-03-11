@@ -19,7 +19,7 @@ def read_files(df_node):
     
     df_names = [name for name, type in df_headers.items()]
     
-    df=pd.read_csv(f"output_{df_node}.csv", delimiter=";",nrows=1000,header=None,names=df_names)
+    df=pd.read_csv(f"output_{df_node}.csv", delimiter=";",header=None,names=df_names)
     return df
 
 def publication (df1,df2):
@@ -69,9 +69,6 @@ def publication (df1,df2):
         writer = csv.writer(csvfile)
         writer.writerow(ip_headers)
 
-     
-    
-    
     #
 
     return article, inproceedings,output_publication
