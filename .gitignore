@@ -7,3 +7,10 @@ tmp/
 *.egg
 build
 htmlcov
+data/
+
+*ipynb
+raw_data/
+parquets/
+dblp/
+parsed_csv/
