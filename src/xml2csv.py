@@ -94,7 +94,7 @@ def open_outputfiles(elements: set, element_attributes: dict, output_filename: s
         if fieldnames is not None and len(fieldnames) > 0:
             fieldnames = sorted(list(fieldnames))
             fieldnames.insert(0, 'id')
-            output_path = 'parsed_csv/%s_%s%s' % (path, element, ext)
+            output_path = '%s_%s%s' % (path, element, ext)
             output_file = open(output_path, mode='w', encoding='UTF-8')
             output_writer = csv.DictWriter(output_file, fieldnames=fieldnames, delimiter=';',
                                            quoting=csv.QUOTE_MINIMAL, quotechar='"', doublequote=True,
