@@ -20,5 +20,5 @@ sh bulk_data_insert.sh
 
 Run the command :
 ``` sh
-sudo chown -R $USER dblp data 
+sudo chown -R $USER data
 ```
