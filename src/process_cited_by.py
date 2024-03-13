@@ -38,7 +38,6 @@ def make_proceedings_parquet():
     proceedings['conf_name']= proceedings['crossref'].apply(lambda x : str(x).split('/')[1] if len ( str(x).split('/')) == 3 else '').apply(str)
     proceedings['filter'] = proceedings['crossref'].apply(lambda x : str(x).split('/')[0]if len ( str(x).split('/')) == 3 else '').apply(str)
     proceedings=proceedings[proceedings['filter'] == 'conf']
-    print(proceedings.head())
 
     fm.save_inproceedings_parquet(proceedings)
     del proceedings
@@ -51,7 +50,6 @@ def get_cites_conferences():
     # cite['conf_name'] = cite['cite:string'].apply(process_conf_name)
     # cite['author'] = cite['cite:string'].apply(author)
     # cite['year'] = cite['cite:string'].apply(year)
-    # print(cite.head())
 
 
 def main():

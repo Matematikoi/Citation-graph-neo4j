@@ -23,7 +23,6 @@ class Filenames(Enum):
 
 def save_inproceedings_parquet(data):
     data = data[['inproceedings','author','crossref','url', 'year', 'conf_name']]
-    print('TOTAL_LEN', len(data['conf_name'].unique()))
     data.to_parquet('./parquets/inproceedings', partition_cols=['conf_name'], engine = 'fastparquet')
 
 def get_inproceedings_parquet():
