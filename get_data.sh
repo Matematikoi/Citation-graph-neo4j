@@ -36,3 +36,5 @@ cd ..
 #     editor:edited_by \
 #     cite:has_citation \
 #     series:is_part_of
+
+python src/process_cited_by.py
