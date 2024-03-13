@@ -44,5 +44,5 @@ def read_parsed_csv_with_header(filename: Filenames):
         df_headers[name] = {"type": type}
 
     df_names = [name for name, type in df_headers.items()]
-    df=pd.read_csv(f"parsed_csv/output_{filename.value}.csv", delimiter=";",header=None,names=df_names, dtype='object' )
+    df=pd.read_csv(f"parsed_csv/output_{filename.value}.csv", delimiter=";",header=None,names=df_names )
     return df
