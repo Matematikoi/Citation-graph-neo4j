@@ -17,16 +17,18 @@ os.chdir(directory_up(root_path, 1))
 
 
 class Filenames(Enum):
-    proceedings = 'proceedings'
+    proceedings = 'inproceedings'
     cite = 'cite'
 
 
 def save_inproceedings_parquet(data):
-    data[['inproceedings','author','crossref','url', 'year', 'conf_name']]\
-        .to_parquet('./parquets/inproceedings', partition_cols=['conf_name'])
+    data = data[['inproceedings','author','crossref','url', 'year', 'conf_name']]
+    print('TOTAL_LEN', len(data['conf_name'].unique()))
+    data.to_parquet('./parquets/inproceedings', partition_cols=['conf_name'], engine = 'fastparquet')
 
 def get_inproceedings_parquet():
-    return pq.ParquetDataset('parquets/inproceedings')
+    dataset =pq.ParquetDataset('parquets/inproceedings')
+    return dataset.read().to_pandas()
 
 def read_parsed_csv_without_header(filename: Filenames):
     return pd.read_csv(f"parsed_csv/output_{filename.value}.csv", sep = ';')
@@ -42,6 +44,5 @@ def read_parsed_csv_with_header(filename: Filenames):
         df_headers[name] = {"type": type}
 
     df_names = [name for name, type in df_headers.items()]
-
-    df=pd.read_csv(f"parsed_csv/output_{filename.value}.csv", delimiter=";",header=None,names=df_names)
+    df=pd.read_csv(f"parsed_csv/output_{filename.value}.csv", delimiter=";",header=None,names=df_names, dtype='object' )
     return df

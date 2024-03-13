@@ -34,26 +34,24 @@ def year(s):
 
 
 def make_proceedings_parquet():
-   proceedings = fm.read_parsed_csv_with_header()
-   proceedings['conf_name']= proceedings['crossref']\
-      .apply(lambda x : str(x).split('/')[1] \
-             if len ( str(x).split('/')) == 3 else '')
-   fm.save_inproceedings_parquet(proceedings, fm.Filenames.proceedings)
-   del proceedings
+    proceedings = fm.read_parsed_csv_with_header(fm.Filenames.proceedings)
+    proceedings['conf_name']= proceedings['crossref'].apply(lambda x : str(x).split('/')[1] if len ( str(x).split('/')) == 3 else '').apply(str)
+    proceedings['filter'] = proceedings['crossref'].apply(lambda x : str(x).split('/')[0]if len ( str(x).split('/')) == 3 else '').apply(str)
+    proceedings=proceedings[proceedings['filter'] == 'conf']
+    print(proceedings.head())
 
-def get_proceedings_parquet():
-   dataset = fm.get_inproceedings_parquet()
-   return dataset.read().to_pandas()
+    fm.save_inproceedings_parquet(proceedings)
+    del proceedings
 
 def get_cites_conferences():
-   # make_proceedings_parquet()
-   # proceedings = get_proceedings_parquet()
-   cite = fm.read_parsed_csv_without_header(fm.Filenames.cite)
-   cite = cite[cite['cite:string'].str.contains('conf') | cite['cite:string'].str.contains('journal')]
-   cite['conf_name'] = cite['cite:string'].apply(process_conf_name)
-   cite['author'] = cite['cite:string'].apply(author)
-   cite['year'] = cite['cite:string'].apply(year)
-   print(cite.head())
+    make_proceedings_parquet()
+    proceedings = fm.get_inproceedings_parquet()
+    # cite = fm.read_parsed_csv_without_header(fm.Filenames.cite)
+    # cite = cite[cite['cite:string'].str.contains('conf') | cite['cite:string'].str.contains('journal')]
+    # cite['conf_name'] = cite['cite:string'].apply(process_conf_name)
+    # cite['author'] = cite['cite:string'].apply(author)
+    # cite['year'] = cite['cite:string'].apply(year)
+    # print(cite.head())
 
 
 def main():
