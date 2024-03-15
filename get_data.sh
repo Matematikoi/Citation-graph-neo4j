@@ -10,31 +10,28 @@ mkdir -p parquets
 
 # Download the data
 cd raw_data
-# TODO uncomment
-# wget https://dblp.org/xml/dblp.dtd
-# wget https://dblp.org/xml/dblp.xml.gz -P raw_data
+wget https://dblp.org/xml/dblp.dtd
+wget https://dblp.org/xml/dblp.xml.gz -P raw_data
 
 # unpack the data
-# TODO uncomment
-# gunzip -d dblp.xml.gz
+gunzip -d dblp.xml.gz
 
 cd ..
 
-# TODO uncomment
-# chmod +x src/xml2csv.py
-# ./src/xml2csv.py\
-#     --annotate\
-#     --neo4j \
-#     raw_data/dblp.xml\
-#     raw_data/dblp.dtd\
-#     parsed_csv/output.csv \
-#     --relations \
-#     author:authored_by\
-#     journal:published_in \
-#     publisher:published_by \
-#     school:submitted_at \
-#     editor:edited_by \
-#     cite:has_citation \
-#     series:is_part_of
+chmod +x src/xml2csv.py
+./src/xml2csv.py\
+    --annotate\
+    --neo4j \
+    raw_data/dblp.xml\
+    raw_data/dblp.dtd\
+    parsed_csv/output.csv \
+    --relations \
+    author:authored_by\
+    journal:published_in \
+    publisher:published_by \
+    school:submitted_at \
+    editor:edited_by \
+    cite:has_citation \
+    series:is_part_of
 
 python src/process_cited_by.py
