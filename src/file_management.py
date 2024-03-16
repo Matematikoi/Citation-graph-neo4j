@@ -51,4 +51,4 @@ def read_parsed_csv_with_header(filename: Filenames):
     return df
 
 def save_parsed_csv(data, filename:Filenames):
-    data.to_csv(f"parsed_csv/output_{filename.value}.csv", index = False)
+    data.to_csv(f"parsed_csv/output_{filename.value}.csv", index = False, delimiter = ';')
