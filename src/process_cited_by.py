@@ -3,6 +3,7 @@ import numpy as np
 import pyarrow.parquet as pq
 import swifter
 import file_management as fm
+import numpy as np
 
 
 def process_conference(s):
@@ -36,8 +37,8 @@ def get_year_from_key(s):
 
 def make_proceedings_parquet():
     proceedings = fm.read_parsed_csv_with_header(fm.Filenames.proceedings)
-    proceedings['conf_name']= proceedings['crossref'].apply(lambda x : str(x).split('/')[1] if len ( str(x).split('/')) == 3 else '').apply(str)
-    proceedings['filter'] = proceedings['crossref'].apply(lambda x : str(x).split('/')[0]if len ( str(x).split('/')) == 3 else '').apply(str)
+    proceedings['conf_name']= proceedings['crossref'].apply(lambda x : str(x).split('/')[1] if len ( str(x).split('/')) == 3 else np.nan).apply(str)
+    proceedings['filter'] = proceedings['crossref'].apply(lambda x : str(x).split('/')[0]if len ( str(x).split('/')) == 3 else np.nan).apply(str)
     proceedings=proceedings[proceedings['filter'] == 'conf']
 
     fm.save_inproceedings_parquet(proceedings)
@@ -53,7 +54,7 @@ def get_id_from_conference (conf_name, year, author_name, proceedings):
     return result[0]
 
 def get_cites_conferences():
-    # make_proceedings_parquet()
+    make_proceedings_parquet()
     proceedings = fm.get_inproceedings_parquet()
     cite = fm.read_parsed_csv_without_header(fm.Filenames.cite)
     cite = cite[cite['cite:string'].str.contains('conf')]
@@ -67,10 +68,34 @@ def get_cites_conferences():
     cite = cite[cite['merge'].notna()]
     print("Getting node from the conference")
     cite['node_id'] = cite['merge'].swifter.apply(lambda x :  get_id_from_conference(x.split('|')[0],int(x.split('|')[1]), x.split('|')[2], proceedings) if x is not None else None)
-    print(cite.head())
+    return cite
+
+def get_cites_journals():
+    cite = fm.read_parsed_csv_without_header(fm.Filenames.cite)
+    cite = cite[cite['cite:string'].str.contains('journal')]
+    articles = fm.read_parsed_csv_with_header(fm.Filenames.article)
+    nodes_id = {}
+    for _, row in articles.iterrows():
+        nodes_id[row['key']] =row['article']
+    cite['node_id'] = cite['cite:string'].apply(lambda x : nodes_id[x] if x in nodes_id else np.nan)
+    del articles
+    return cite
 
 def main():
-    get_cites_conferences()
+    # Get IDS from the key and crossref
+    cites_conf = get_cites_conferences()
+    cites_journals = get_cites_journals()
+    cites_merged = pd.concat([cites_conf, cites_journals], ignore_index=True, sort=False)[[':ID','node_id']]
+
+    # Merge with the cite relationship
+    cites_relationship = fm.read_parsed_csv_without_header(fm.Filenames.has_citation)
+    result = pd.merge(cites_relationship, cites_merged, left_on = ':END_ID', right_on = ':ID')
+    result.dropna(inplace=True)
+    result.node_id = result.node_id.apply(int)
+    result = result [[':START_ID','node_id']]
+    result.columns = [':START_ID',':END_ID']
+    fm.save_parsed_csv(result, fm.Filenames.cite_processed)
+
 
 if __name__ == '__main__':
     main()

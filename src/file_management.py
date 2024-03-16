@@ -19,6 +19,10 @@ os.chdir(directory_up(root_path, 1))
 class Filenames(Enum):
     proceedings = 'inproceedings'
     cite = 'cite'
+    article = 'article'
+    has_citation = 'cite_has_citation'
+    cite_processed = 'cite_processed'
+
 
 
 def save_inproceedings_parquet(data):
@@ -45,3 +49,6 @@ def read_parsed_csv_with_header(filename: Filenames):
     df_names = [name for name, type in df_headers.items()]
     df=pd.read_csv(f"parsed_csv/output_{filename.value}.csv", delimiter=";",header=None,names=df_names )
     return df
+
+def save_parsed_csv(data, filename:Filenames):
+    data.to_csv(f"parsed_csv/output_{filename.value}.csv", index = False)
