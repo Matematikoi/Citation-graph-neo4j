@@ -36,7 +36,7 @@ def get_year_from_key(s):
 
 
 def make_proceedings_parquet():
-    proceedings = fm.read_parsed_csv_with_header(fm.Filenames.proceedings)
+    proceedings = fm.read_parsed_csv_with_header(fm.Filenames.inproceedings)
     proceedings['conf_name']= proceedings['crossref'].apply(lambda x : str(x).split('/')[1] if len ( str(x).split('/')) == 3 else np.nan).apply(str)
     proceedings['filter'] = proceedings['crossref'].apply(lambda x : str(x).split('/')[0]if len ( str(x).split('/')) == 3 else np.nan).apply(str)
     proceedings=proceedings[proceedings['filter'] == 'conf']

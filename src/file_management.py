@@ -15,15 +15,12 @@ root_path = os.path.dirname(os.path.realpath(__file__))
 # Change working directory to root of the project.
 os.chdir(directory_up(root_path, 1))
 
-
 class Filenames(Enum):
-    proceedings = 'inproceedings'
+    inproceedings = 'inproceedings'
     cite = 'cite'
     article = 'article'
     has_citation = 'cite_has_citation'
     cite_processed = 'cite_processed'
-
-
 
 def save_inproceedings_parquet(data):
     data = data[['inproceedings','author','crossref','url', 'year', 'conf_name']]
@@ -51,4 +48,4 @@ def read_parsed_csv_with_header(filename: Filenames):
     return df
 
 def save_parsed_csv(data, filename:Filenames):
-    data.to_csv(f"parsed_csv/output_{filename.value}.csv", index = False, delimiter = ';')
+    data.to_csv(f"parsed_csv/output_{filename.value}.csv", index = False, sep = ';')
