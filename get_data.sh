@@ -35,3 +35,4 @@ chmod +x src/xml2csv.py
     series:is_part_of
 
 python src/process_cited_by.py
+python src/publication.py
