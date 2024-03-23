@@ -6,16 +6,15 @@ set -eu
 # Do not throw error if folder already exists
 mkdir -p raw_data
 mkdir -p parsed_csv
+mkdir -p parquets
 
 # Download the data
 cd raw_data
-# TODO uncomment
-# wget https://dblp.org/xml/dblp.dtd
-# wget https://dblp.org/xml/dblp.xml.gz -P raw_data
+wget https://dblp.org/xml/dblp.dtd
+wget https://dblp.org/xml/dblp.xml.gz -P raw_data
 
 # unpack the data
-# TODO uncomment
-# gunzip -d dblp.xml.gz
+gunzip -d dblp.xml.gz
 
 cd ..
 
@@ -34,3 +33,5 @@ chmod +x src/xml2csv.py
     editor:edited_by \
     cite:has_citation \
     series:is_part_of
+
+python src/process_cited_by.py
