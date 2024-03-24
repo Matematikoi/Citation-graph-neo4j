@@ -6,22 +6,10 @@ import re
 import file_management as fm
 
 
-def read_files(df_node):
-    with open(f"parsed_csv/output_{df_node}_header.csv", "r") as headers_files:
-        reader = csv.reader(headers_files, delimiter=";")
-        ip_headers = next(reader)  
-        
-    df_headers = {}
+def preprocess_publication_df(data):
+    data.year = data.year.astype('Int64')
+    return data
 
-    for head in ip_headers:
-        name, type = head.split(":")
-        
-        df_headers[name] = {"type": type}
-    
-    df_names = [name for name, type in df_headers.items()]
-    
-    df=pd.read_csv(f"parsed_csv/output_{df_node}.csv",nrows=500, delimiter=";",header=None,names=df_names)
-    return df
 
 def publication ():
 
@@ -53,9 +41,9 @@ def publication ():
         if columna not in inproceedings.columns:
             inproceedings[columna] = pd.Series(dtype=object)
     
-   
-    output_publication=pd.concat([article,inproceedings])
-    output_publication.to_csv("parsed_csv/output_publication.csv", index=False, header=False)  # Set index=False to exclude the index column
+    output_publication=preprocess_publication_df(pd.concat([article,inproceedings]))
+    print(output_publication.info(verbose=True))
+    output_publication.to_csv("parsed_csv/output_publication.csv", index=False, header=False, sep = ';')  # Set index=False to exclude the index column
 
 
     #Header
@@ -67,17 +55,15 @@ def publication ():
     ip_headers.append("Type_publication:string")
 
     with open("parsed_csv/output_publication_header.csv", "w", newline="") as csvfile:
-        writer = csv.writer(csvfile)
+        writer = csv.writer(csvfile, delimiter = ';')
         writer.writerow(ip_headers)
 
     #
 
     return article, inproceedings,output_publication
 
-
 def main():
     publication()
 
 if __name__ == '__main__':
     main()
-    

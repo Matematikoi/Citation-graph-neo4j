@@ -13,6 +13,7 @@ sleep 4
 docker exec -i neo4j bash -c "cd /var/lib/neo4j/import && neo4j-admin database import full \
 --overwrite-destination=true \
 --delimiter \";\" \
+--verbose \
 --array-delimiter \"|\" \
 --id-type INTEGER \
 --nodes=mastersthesis=\"output_mastersthesis_header.csv,output_mastersthesis.csv\" \
@@ -20,10 +21,9 @@ docker exec -i neo4j bash -c "cd /var/lib/neo4j/import && neo4j-admin database i
 --nodes=proceedings=\"output_proceedings_header.csv,output_proceedings.csv\" \
 --nodes=incollection=\"output_incollection_header.csv,output_incollection.csv\" \
 --nodes=data=\"output_data_header.csv,output_data.csv\" \
---nodes=article=\"output_article_header.csv,output_article.csv\" \
 --nodes=phdthesis=\"output_phdthesis_header.csv,output_phdthesis.csv\" \
 --nodes=www=\"output_www_header.csv,output_www.csv\" \
---nodes=inproceedings=\"output_inproceedings_header.csv,output_inproceedings.csv\" \
+--nodes=publication=\"output_publication_header.csv,output_publication.csv\" \
 --nodes=author=\"output_author.csv\" \
 --relationships=authored_by=\"output_author_authored_by.csv\" \
 --nodes=cite=\"output_cite.csv\" \
