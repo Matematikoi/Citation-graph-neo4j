@@ -11,7 +11,7 @@ mkdir -p parquets
 # Download the data
 cd raw_data
 wget https://dblp.org/xml/dblp.dtd
-wget https://dblp.org/xml/dblp.xml.gz -P raw_data
+wget https://dblp.org/xml/dblp.xml.gz
 
 # unpack the data
 gunzip -d dblp.xml.gz
@@ -36,3 +36,4 @@ chmod +x src/xml2csv.py
 
 python src/process_cited_by.py
 python src/publication.py
+python src/presented_in.py

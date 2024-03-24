@@ -18,7 +18,7 @@ docker exec -i neo4j bash -c "cd /var/lib/neo4j/import && neo4j-admin database i
 --id-type INTEGER \
 --nodes=mastersthesis=\"output_mastersthesis_header.csv,output_mastersthesis.csv\" \
 --nodes=book=\"output_book_header.csv,output_book.csv\" \
---nodes=proceedings=\"output_proceedings_header.csv,output_proceedings.csv\" \
+--nodes=conference=\"output_proceedings_header.csv,output_proceedings.csv\" \
 --nodes=incollection=\"output_incollection_header.csv,output_incollection.csv\" \
 --nodes=data=\"output_data_header.csv,output_data.csv\" \
 --nodes=phdthesis=\"output_phdthesis_header.csv,output_phdthesis.csv\" \
@@ -38,6 +38,7 @@ docker exec -i neo4j bash -c "cd /var/lib/neo4j/import && neo4j-admin database i
 --relationships=edited_by=\"output_editor_edited_by.csv\" \
 --nodes=series=\"output_series.csv\" \
 --relationships=cited_processed=\"output_cite_processed.csv\" \
+--relationships=presented_in=\"output_presented_in.csv\" \
 --relationships=is_part_of=\"output_series_is_part_of.csv\" neo4j"
 
 docker compose stop neo4j

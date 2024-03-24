@@ -17,10 +17,12 @@ os.chdir(directory_up(root_path, 1))
 
 class Filenames(Enum):
     inproceedings = 'inproceedings'
+    proceedings = 'proceedings'
     cite = 'cite'
     article = 'article'
     has_citation = 'cite_has_citation'
     cite_processed = 'cite_processed'
+    presented_in = 'presented_in'
 
 def save_inproceedings_parquet(data):
     data = data[['inproceedings','author','crossref','url', 'year', 'conf_name']]
