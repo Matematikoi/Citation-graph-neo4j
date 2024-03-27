@@ -48,7 +48,7 @@ def run_query_1():
         RETURN conference_id,  conference_title, publication_ids[0..3] AS top_publication_ids, citation_counts[0..3] AS top_citation_counts, article_titles[0..3] AS top_article_titles
     """
     result = make_request(query, 1)
-    write_result_to_csv(result, 'test.csv')
+    write_result_to_csv(result, 'result_query_1.csv')
 
 
 def main():
