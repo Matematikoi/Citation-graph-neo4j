@@ -10,7 +10,7 @@ import yake
 def extract_key_words():
     publication=fm.read_parsed_csv_with_header(fm.Filenames.publication)
 
-    publication['title_kw'] = [title.lower() for title in publication['title']]
+    publication['title_kw'] = [title.lower() if isinstance(title, str) else title for title in publication['title']]
     kw_extractor = yake.KeywordExtractor(top=10, stopwords=None)
 
     all_keywords = []
