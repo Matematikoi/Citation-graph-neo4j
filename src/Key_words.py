@@ -51,9 +51,33 @@ def create_kw_database():
     return Keywords
 
 
+def create_kw_relation():
+    
+    df, all_keywords=extract_key_words()
+    df_kw=create_kw_database()
+    
+    kw_relation = []
+    for index, row in df.iterrows():
+
+        kew_words_title = {key for dic in row['kw-scored'] for key in dic.keys()}
+
+        coincidence = df_kw[df_kw['Key_words'].isin(kew_words_title)]
+        # Almacena los ID de la data original junto con los ID correspondientes a las palabras encontradas
+        for _, word in coincidence.iterrows():
+            kw_relation.append((row['ID'], word['ID']))
+
+    # Crea un nuevo DataFrame de coincidencias
+    kw_relationship = pd.DataFrame(kw_relation, columns=[":START_ID",":END_ID"])
+    
+
+    kw_relationship.to_csv("parsed_csv/output_has_key_word.csv", index=False, header=True, sep = ';')  # Set index=False to exclude the index column
+
+    return kw_relationship
+
 
 def main():
     create_kw_database()
+    create_kw_relation()
 
 if __name__ == '__main__':
     main()

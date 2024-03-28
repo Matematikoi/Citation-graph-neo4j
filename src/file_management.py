@@ -23,6 +23,7 @@ class Filenames(Enum):
     has_citation = 'cite_has_citation'
     cite_processed = 'cite_processed'
     presented_in = 'presented_in'
+    publication= 'publication'
 
 def save_inproceedings_parquet(data):
     data = data[['inproceedings','author','crossref','url', 'year', 'conf_name']]
