@@ -24,6 +24,7 @@ class Filenames(Enum):
     cite_processed = 'cite_processed'
     presented_in = 'presented_in'
     publication= 'publication'
+    key_words='key_words'
 
 def save_inproceedings_parquet(data):
     data = data[['inproceedings','author','crossref','url', 'year', 'conf_name']]

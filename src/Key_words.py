@@ -54,7 +54,7 @@ def create_kw_database():
 def create_kw_relation():
     
     df, all_keywords=extract_key_words()
-    df_kw=create_kw_database()
+    df_kw=fm.read_parsed_csv_with_header(fm.Filenames.key_words)
     
     kw_relation = []
     for index, row in df.iterrows():
