@@ -7,6 +7,7 @@ import file_management as fm
 import yake
 import swifter
 import nltk
+from itertools import chain
 nltk.download('punkt')
 
 
@@ -33,8 +34,8 @@ def create_kw_database():
 
     base, all_keywords=extract_key_words()
 
-    Keywords=pd.DataFrame(set(all_keywords.sum()))
-    Keywords["ID"] = [201700 + i for i in range(len(Keywords))]
+    Keywords = pd.DataFrame({'Keywords': list(set(chain.from_iterable(all_keywords)))})
+    Keywords["ID"] = [500000000 + i for i in range(len(Keywords))]
     
     dict={"Key_words": "string", "ID":"ID"}
     Keywords.to_csv("parsed_csv/output_key_words.csv", index=False, header=False, sep = ';')  # Set index=False to exclude the index column
