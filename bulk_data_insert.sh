@@ -39,6 +39,7 @@ docker exec -i neo4j bash -c "cd /var/lib/neo4j/import && neo4j-admin database i
 --nodes=series=\"output_series.csv\" \
 --relationships=cited_processed=\"output_cite_processed.csv\" \
 --relationships=presented_in=\"output_presented_in.csv\" \
+--relationships=reviewed_by=\"output_reviewed_by.csv\" \
 --relationships=is_part_of=\"output_series_is_part_of.csv\" neo4j"
 
 docker compose stop neo4j

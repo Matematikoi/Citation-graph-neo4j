@@ -50,6 +50,7 @@ def run_query_1():
     result = make_request(query, 1)
     write_result_to_csv(result, 'result_query_1.csv')
 
+
 def run_query_2():
     query = """
         match (s:series)-[r2:is_part_of]-(c2:conference)-[r3:presented_in]-(a:publication)-[r4:authored_by]-(a2:author)
