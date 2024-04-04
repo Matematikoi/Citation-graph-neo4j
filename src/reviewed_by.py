@@ -6,10 +6,10 @@ import re
 import file_management as fm
 
 def create_reviewed_by_relation():
-    df = pd.read_csv("parsed_csv/output_author_authored_by.csv", delimiter=";",header=None, skiprows=1, names=['START_ID', 'END_ID'])
+    df = pd.read_csv("parsed_csv/output_author_authored_by.csv", delimiter=";",header=None, skiprows=1, names=[':START_ID', ':END_ID'])
 
     # Contar la frecuencia de los autores
-    author_counts = df['END_ID'].value_counts()
+    author_counts = df[':END_ID'].value_counts()
 
     # Obtener autores con al menos 5 artículos
     author_more_5 = author_counts[author_counts >= 50].index.tolist()
@@ -27,8 +27,8 @@ def create_reviewed_by_relation():
 
     for i in range(num_batches):
         batch_df = sample_df[i * batch_size : (i+1) * batch_size]
-        for article_id, group in batch_df.groupby('START_ID'):
-            authors = group['END_ID'].unique()
+        for article_id, group in batch_df.groupby(':START_ID'):
+            authors = group[':END_ID'].unique()
             reviewer_selected = []
             while len(reviewer_selected) < 3:
                 candidate = np.random.choice(author_more_5)
@@ -36,7 +36,7 @@ def create_reviewed_by_relation():
                     reviewer_selected.append(candidate)
 
             for reviewer in reviewer_selected:
-                relation.append({'START_ID': article_id, 'END_ID': reviewer})
+                relation.append({':START_ID': article_id, ':END_ID': reviewer})
 
 # Convertir la lista de relaciones en un DataFrame
     relation_df = pd.DataFrame(relation)
