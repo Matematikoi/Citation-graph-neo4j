@@ -37,3 +37,4 @@ chmod +x src/xml2csv.py
 python src/process_cited_by.py
 python src/publication.py
 python src/presented_in.py
+python src/reviewed_by.py
