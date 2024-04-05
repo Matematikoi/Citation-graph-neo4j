@@ -36,7 +36,7 @@ def create_kw_database():
 
     Keywords = pd.DataFrame({'Keywords': list(set(chain.from_iterable(all_keywords)))})
     Keywords["ID"] = [500000000 + i for i in range(len(Keywords))]
-    
+    print(Keywords[0:3])
     dict={"Key_words": "string", "ID":"ID"}
     Keywords.to_csv("parsed_csv/output_key_words.csv", index=False, header=False, sep = ';')  # Set index=False to exclude the index column
     with open("parsed_csv/output_key_words_header.csv", "w") as f:
@@ -50,25 +50,20 @@ def create_kw_relation(df):
     
     df=df
     df_kw=fm.read_parsed_csv_with_header(fm.Filenames.key_words)
-    
-    kw_relation = []
-    for index, row in df.iterrows():
+    df_kw=df_kw[df_kw["Key_words"].notnull()]
 
-        kew_words_title = row['title'].lower().split(' ') if isinstance(row['title'], str) else []
-
-
-        coincidence = df_kw[df_kw['Key_words'].isin(kew_words_title)]
-        # Almacena los ID de la data original junto con los ID correspondientes a las palabras encontradas
-        for _, word in coincidence.iterrows():
-            kw_relation.append((row['ID'], word['ID']))
+    df['title_1'] = df['title'].str.lower().str.split(' ')
+    df = df.explode('title_1')
+    merged_df = df.merge(df_kw, left_on='title', right_on='Key_words', how='inner')
+    kw_relation = merged_df[['ID_x', 'ID_y']]
+    kw_relation = kw_relation.rename(columns={'ID_x': ':START_ID', 'ID_y': ':END_ID'})
 
     # Crea un nuevo DataFrame de coincidencias
-    kw_relationship = pd.DataFrame(kw_relation, columns=[":START_ID",":END_ID"])
-    
+    print(kw_relation.head())
 
-    kw_relationship.to_csv("parsed_csv/output_has_key_word.csv", index=False, header=True, sep = ';')  # Set index=False to exclude the index column
+    kw_relation.to_csv("parsed_csv/output_has_key_word.csv", index=False, header=True, sep = ';')  # Set index=False to exclude the index column
 
-    return kw_relationship
+    return kw_relation
 
 
 
