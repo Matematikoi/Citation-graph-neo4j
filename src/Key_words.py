@@ -6,9 +6,7 @@ import re
 import file_management as fm
 import yake
 import swifter
-import nltk
-from itertools import chain
-nltk.download('punkt')
+
 
 
 
@@ -54,7 +52,7 @@ def create_kw_relation(df):
 
     df['title_1'] = df['title'].str.lower().str.split(' ')
     df = df.explode('title_1')
-    merged_df = df.merge(df_kw, left_on='title', right_on='Key_words', how='inner')
+    merged_df = df.merge(df_kw, left_on='title_1', right_on='Key_words', how='inner')
     kw_relation = merged_df[['ID_x', 'ID_y']]
     kw_relation = kw_relation.rename(columns={'ID_x': ':START_ID', 'ID_y': ':END_ID'})
 
