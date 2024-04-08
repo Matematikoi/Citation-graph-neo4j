@@ -5,7 +5,9 @@ import csv
 import re
 import file_management as fm
 import yake
-import swifter
+import nltk
+from itertools import chain
+nltk.download('punkt')
 
 
 
@@ -47,6 +49,7 @@ def create_kw_database():
 def create_kw_relation(df):
     
     df=df
+    print("df",df.shape)
     df_kw=fm.read_parsed_csv_with_header(fm.Filenames.key_words)
     df_kw=df_kw[df_kw["Key_words"].notnull()]
 
@@ -58,7 +61,7 @@ def create_kw_relation(df):
 
     # Crea un nuevo DataFrame de coincidencias
     print(kw_relation.head())
-
+    print("relation",kw_relation.shape)
     kw_relation.to_csv("parsed_csv/output_has_key_word.csv", index=False, header=True, sep = ';')  # Set index=False to exclude the index column
 
     return kw_relation
