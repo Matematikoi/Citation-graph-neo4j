@@ -1,0 +1,107 @@
+#+title: Cypher Data
+
+
+* Creating the graph
+#+begin_src cypher
+MATCH (a1:author)-[au:authored_by]->(p:publication)<-[au2:authored_by]-(a2:author)
+RETURN gds.graph.project(
+    'author_graph', a1, a2,
+    {
+         sourceNodeLabels: labels(a1),
+         targetNodeLabels: labels(a2),
+         relationshipType: 'coauthor'
+    }
+)
+#+end_src
+I think it doesn't run because we have the wrong order
+#+begin_src cypher
+MATCH (a1:author)<-[au:authored_by]-(p:publication)-[au2:authored_by]->(a2:author)
+RETURN gds.graph.project(
+    'author_graph', a1, a2,
+    {
+         sourceNodeLabels: labels(a1),
+         targetNodeLabels: labels(a2),
+         relationshipType: 'coauthor'
+    }
+)
+#+end_src
+* get the query
+#+begin_src cypher
+MATCH (source:author {author: 'Paul Erdös'}), (target:author {author: 'Allen R. Freedman'})
+CALL gds.shortestPath.dijkstra.stream('author_graph', {
+    sourceNode: source,
+    targetNode: target
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).name AS sourceNodeName,
+    gds.util.asNode(targetNode).name AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY index
+#+end_src
+using ids
+#+begin_src cypher
+MATCH (source:author ), (target)
+where id(source) = 869829 and id(target) = 2600125
+CALL gds.shortestPath.dijkstra.stream('author_graph', {
+    sourceNode: source,
+    targetNode: target
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).name AS sourceNodeName,
+    gds.util.asNode(targetNode).name AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY index
+#+end_src
+
+Con gabriel
+#+begin_src cypher
+MATCH (source:author ), (target)
+where id(source) = 869829 and id(target) = 573089
+CALL gds.shortestPath.dijkstra.stream('author_graph', {
+    sourceNode: source,
+    targetNode: target
+})
+YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
+RETURN
+    index,
+    gds.util.asNode(sourceNode).name AS sourceNodeName,
+    gds.util.asNode(targetNode).name AS targetNodeName,
+    totalCost,
+    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
+    costs,
+    nodes(path) as path
+ORDER BY index
+#+end_src
+* Make the graph undirected
+#+begin_src cypher
+MATCH (a1:author)<-[au:authored_by]-(p:publication)-[au2:authored_by]->(a2:author)
+RETURN gds.graph.project(
+    'author_graph_undirected', a1, a2,
+    {
+         sourceNodeLabels: labels(a1),
+         targetNodeLabels: labels(a2),
+         relationshipType: 'coauthor'
+    },
+    {
+        undirectedRelationshipTypes:['coauthor']
+    }
+)
+
+#+end_src
+* getting triangle counts
+#+begin_src cypher
+CALL gds.triangleCount.stream('author_graph_undirected')
+YIELD nodeId, triangleCount
+RETURN gds.util.asNode(nodeId).author AS name, triangleCount
+ORDER BY triangleCount DESC, name ASC
+#+end_src
