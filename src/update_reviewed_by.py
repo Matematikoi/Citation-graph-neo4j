@@ -1,6 +1,4 @@
-import pandas as pd
 import run_queries as rq
-import file_management as fm
 
 def get_review_info(page_size, offset):
     reviews_query = f'''
