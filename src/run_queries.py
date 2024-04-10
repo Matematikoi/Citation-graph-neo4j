@@ -20,7 +20,7 @@ def make_request (cypher_query, query_number):
     # Check if the request was successful
     if response.status_code == 200:
         data = response.json()
-        print(f"Request successfull for query {query_number}")
+        # print(f"Request successfull for query {query_number}")
         return data
     else:
         print(f"Request failed with status code: {response.status_code} for query {query_number}")
@@ -53,8 +53,8 @@ def run_query_1():
 
 def run_query_2():
     query = """
-        MATCH (s:series)-[r2:is_part_of]-(c2:conference)-[r3:presented_in]-(a:publication)-[r4:authored_by]-(a2:author)
-        WITH distinct id(s) AS series_id, s.series AS series_title, id(a2) AS author_id, a2.author AS author_name, count(a) as articles_by_author_in_series, count(c2) AS total_conferences
+        match (s:series)-[r2:is_part_of]-(c2:conference)-[r3:presented_in]-(a:publication)-[r4:authored_by]-(a2:author)
+        with distinct id(s) AS series_id, s.series AS series_title, id(a2) AS author_id, a2.author AS author_name, count(a) as articles_by_author_in_series, count(c2) AS total_conferences
         order by series_id, articles_by_author_in_series DESC
         where total_conferences > 4
         return series_id, author_id, articles_by_author_in_series, series_title, author_name, total_conferences

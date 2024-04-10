@@ -9,6 +9,19 @@ docker compose up -d
 ```
 And to access neo4j browser, you can access http://localhost:7474/browser/ .
 
+# Process the data
+First you need to install the python requirements
+```sh 
+pip install requirements.txt
+```
+
+You can run :
+
+
+```sh
+sh get_data.sh
+```
+
 # Upload the data
 To upload the data run:
 
