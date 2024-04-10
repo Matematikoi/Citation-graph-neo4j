@@ -1,4 +1,12 @@
 import run_queries as rq
+import asyncio
+
+def background(f):
+    def wrapped(*args, **kwargs):
+        return asyncio.get_event_loop().run_in_executor(None, f, *args, **kwargs)
+
+    return wrapped
+page_size = 10
 
 def get_review_info(page_size, offset):
     reviews_query = f'''
@@ -19,20 +27,20 @@ def update_data(review_data, total):
         RETURN r.review
     '''
     result = rq.make_request(query, total)
+@background
+def update_offset(offset):
+    reviews = get_review_info(page_size, offset)
+    review_data = get_reviews_formatted(reviews)
+    update_data(review_data, offset + page_size )
+
 
 def update_review_by():
-    page_size = 10
     cnt = 0
-    while True:
+    offset = 0
+    while offset<1100000:
         cnt +=1
-        offset = page_size*cnt
-        reviews = get_review_info(page_size, offset)
-        # Stop when there are no more reviews to update
-        if len(reviews) == 0:
-            break
-        review_data = get_reviews_formatted(reviews)
-        update_data(review_data, offset + page_size )
-
+        offset += page_size
+        update_offset(offset)
 def main():
     update_review_by()
 

@@ -20,7 +20,7 @@ def make_request (cypher_query, query_number):
     # Check if the request was successful
     if response.status_code == 200:
         data = response.json()
-        print(f"Request successfull for query {query_number}")
+        # print(f"Request successfull for query {query_number}")
         return data
     else:
         print(f"Request failed with status code: {response.status_code} for query {query_number}")
