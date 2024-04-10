@@ -61,11 +61,11 @@ def run_query_3():
             MATCH (p:publication)-[]->(j:journal)
             WITH j, j.journal as journal, count(*) as  total_publication
             OPTIONAL MATCH (j:journal)<-[]-(p:publication)-[]->(kw:Key_words)-[]->(r:research_community {name:'lab1'})
-            WITH journal,  total_publication, count(distinct p.title) as  publication_community
-            WITH journal, total_publication, publication_community, (toFloat(publication_community)/toFloat(total_publication)) as ratio
+            WITH j,journal,  total_publication, count(distinct p.title) as  publication_community
+            WITH j,journal, total_publication, publication_community, (toFloat(publication_community)/toFloat(total_publication)) as ratio
             WHERE ratio >=0.8
-            MERGE (j)-[:community_of]->(r)
-            RETURN journal,total_publication, publication_community,ratio
+            MERGE (j)-[:community_of]->(r:research_community {name:'lab1'})
+            RETURN DISTINCT journal,total_publication, publication_community,ratio
 
     """
     result = make_request(query, 3)
@@ -73,12 +73,12 @@ def run_query_3():
 
 def run_query_4():
     query = """
-            MATCH (r:research_community {name:'lab1'})<-[]-(j:journal)<-[]-(p:publication)<-[cite:cited_processed]-()
+            MATCH (r:research_community{name:'lab1'})<-[]-(j:journal)<-[]-(p:publication)<-[cite:cited_processed]-()
             WITH  count(cite) AS citation_count, j.journal AS journal, p.title AS article_title,p.author as author
             ORDER BY journal, citation_count DESC
             WITH collect(citation_count) AS citation_counts,  journal, collect(article_title) AS article_titles, author
-            MERGE (p)-[:community_of]->(r)
-            RETURN journal,article_titles[0..3] AS top_article_titles,author
+            MERGE (p)-[:community_of]->(r:research_community {name:'lab1'})
+            RETURN DISTINCT journal,article_titles[0..3] AS top_article_titles,author
 
 
     """
@@ -87,8 +87,9 @@ def run_query_4():
 
 def run_query_5():
     query = """
-            MATCH (r:research_community {name:'lab1'})<-[:community_of]-(p:publication)-[]->(a:author)
+            MATCH (r:research_community{name:'lab1'})<-[]-(j:journal)<-[]-(p:publication)-[]->(a:author)
             WITH  a.author as author,count(p) as num_publication
+            WHERE num_publication>2
             RETURN author,num_publication
 
 
