@@ -51,8 +51,20 @@ def run_query_1():
     write_result_to_csv(result, 'result_query_1.csv')
 
 
+def run_query_2():
+    query = """
+        match (s:series)-[r2:is_part_of]-(c2:conference)-[r3:presented_in]-(a:publication)-[r4:authored_by]-(a2:author)
+        with distinct id(s) AS series_id, s.series AS series_title, id(a2) AS author_id, a2.author AS author_name, count(a) as articles_by_author_in_series, count(c2) AS total_conferences
+        order by series_id, articles_by_author_in_series DESC
+        where total_conferences > 4
+        return series_id, author_id, articles_by_author_in_series, series_title, author_name, total_conferences
+    """
+    result = make_request(query, 2)
+    write_result_to_csv(result, 'result_query_2.csv')
+
 def main():
     run_query_1()
+    run_query_2()
 
 if __name__ == '__main__':
     main()
