@@ -41,7 +41,7 @@ def write_result_to_csv(results, filename):
 
 def run_query_1():
     query = """
-            CREATE (:research_community {name:'lab3'}) 
+            CREATE (:research_community {name:'lab1'}) 
 
     """
     result = make_request(query, 1)
@@ -49,8 +49,8 @@ def run_query_1():
 
 def run_query_2():
     query = """
-            MATCH (r:research_community {name:'lab3'})
-            MATCH (k:Kew_words)
+            MATCH (r:research_community {name:'lab1'})
+            MATCH (k:Key_words)
             WHERE  k.Key_words =~".*data.*"  or k.Key_words =~".*management.*" OR  k.Key_words =~".*indexing.*" OR k.Key_words =~".*model.*" or k.Key_words =~".*big.*" OR k.Key_words =~".*process.*" OR k.Key_words =~".*storage.*" OR k.Key_words =~".*query.*"
             MERGE (k)-[:community_of]->(r)
     """
@@ -60,7 +60,7 @@ def run_query_3():
     query = """
             MATCH (p:publication)-[]->(j:journal)
             WITH j, j.journal as journal, count(*) as  total_publication
-            OPTIONAL MATCH (j:journal)<-[]-(p:publication)-[]->(kw:Key_words)-[]->(r:research_community {name:'lab2'})
+            OPTIONAL MATCH (j:journal)<-[]-(p:publication)-[]->(kw:Key_words)-[]->(r:research_community {name:'lab1'})
             WITH journal,  total_publication, count(distinct p.title) as  publication_community
             WITH journal, total_publication, publication_community, (toFloat(publication_community)/toFloat(total_publication)) as ratio
             WHERE ratio >=0.8
@@ -73,11 +73,11 @@ def run_query_3():
 
 def run_query_4():
     query = """
-            MATCH (r:research_community {name:'lab2'})<-[]-(j:journal)<-[]-(p:publication)<-[cite:cited_processed]-() 
+            MATCH (r:research_community {name:'lab1'})<-[]-(j:journal)<-[]-(p:publication)<-[cite:cited_processed]-() 
             WITH  count(cite) AS citation_count, j.journal AS journal, p.title AS article_title,p.author as author
             ORDER BY journal, citation_count DESC
             WITH collect(citation_count) AS citation_counts,  journal, collect(article_title) AS article_titles, author
-            MERGE (p)-[:community_of]->(r{name:'db'})
+            MERGE (p)-[:community_of]->(r)
             RETURN journal,article_titles[0..3] AS top_article_titles,author
 
         
@@ -87,7 +87,7 @@ def run_query_4():
 
 def run_query_5():
     query = """
-            MATCH (r:research_community {name:'lab2'})<-[:community_of]-(p:publication)-[]->(a:author)
+            MATCH (r:research_community {name:'lab1'})<-[:community_of]-(p:publication)-[]->(a:author)
             WITH  a.author as author,count(p) as num_publication
             RETURN author,num_publication
 
@@ -99,9 +99,9 @@ def run_query_5():
 def main():
     run_query_1()
     run_query_2()
- #   run_query_3()
- #   run_query_4()
- #   run_query_5()
+    run_query_3()
+    run_query_4()
+    run_query_5()
 
 
 if __name__ == '__main__':
