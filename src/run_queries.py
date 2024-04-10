@@ -50,6 +50,19 @@ def run_query_1():
     result = make_request(query, 1)
     write_result_to_csv(result, 'result_query_1.csv')
 
+def run_query_4():
+    query = """
+        MATCH (au:author)<-[:authored_by]-(p:publication)-[cit:has_citation]->(ci:cite)
+        WITH au.author as author_name, p.title as title, count(*) as num_cites 
+        ORDER BY num_cites desc
+        WITH author_name, collect(num_cites) as list_num_cites
+        WITH author_name, [x IN range(1,size(list_num_cites)) where x<=list_num_cites[x-1]| [list_num_cites[x-1],x] ] as h_index_list
+        RETURN author_name,h_index_list[-1][1] as h_index
+        ORDER BY h_index desc
+    """
+    result = make_request(query, 4)
+    write_result_to_csv(result, 'result_query_4.csv')
+
 
 def run_query_2():
     query = """
@@ -98,6 +111,7 @@ def main():
     run_query_1()
     run_query_2()
     run_query_3()
+    run_query_4()
 
 if __name__ == '__main__':
     main()
