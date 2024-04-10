@@ -62,9 +62,42 @@ def run_query_2():
     result = make_request(query, 2)
     write_result_to_csv(result, 'result_query_2.csv')
 
+
+def run_query_3():
+    query = """
+        MATCH (p:publication)-[]->(j:journal)
+        OPTIONAL MATCH (p)-[]->(c:cite)
+        WITH p.year as year, j.journal as journal, count(distinct p.title) as total,count(c) AS total_citation
+        ORDER BY journal, year
+        WITH journal, collect({year: year, total: total,total_citation:total_citation}) as categoryStats
+        UNWIND range(size(categoryStats)-1, 0, -1) as index
+        WITH
+        journal, 
+        categoryStats[index].year as year, 
+        categoryStats[index].total as total,
+        categoryStats[index].total_citation AS total_citation,
+        CASE WHEN index <> 0 THEN categoryStats[index-1].total ELSE 0 END as previousYearTotal,
+        CASE WHEN index <> 0 THEN categoryStats[index-2].total ELSE 0 END as previousYear2Total
+     
+        RETURN
+        journal,
+        year, 
+        total,
+        previousYearTotal,
+        previousYear2Total,
+        total_citation,
+        CASE WHEN total_citation <> 0 THEN toFloat(total_citation) /( toFloat(previousYear2Total)+ toFloat(previousYearTotal)) ELSE "N/A" END AS impact_factor
+
+
+
+    """
+    result = make_request(query, 3)
+    write_result_to_csv(result, 'result_query_3.csv')
+
 def main():
     run_query_1()
     run_query_2()
+    run_query_3()
 
 if __name__ == '__main__':
     main()
